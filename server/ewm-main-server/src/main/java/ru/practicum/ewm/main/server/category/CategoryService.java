@@ -16,13 +16,11 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    @Transactional(readOnly = true)
     public List<Category> findAll(int from, int size) {
         validatePagination(from, size);
         return categoryRepository.findAllWithOffset(from, size);
     }
 
-    @Transactional(readOnly = true)
     public Category findById(long catId) {
         return getCategoryOrThrow(catId);
     }

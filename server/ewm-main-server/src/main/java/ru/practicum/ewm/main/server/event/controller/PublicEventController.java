@@ -38,10 +38,10 @@ public class PublicEventController {
             @RequestParam(required = false) Boolean paid,
             @RequestParam(required = false) @DateTimeFormat(pattern = EWM_PATTERN) LocalDateTime rangeStart,
             @RequestParam(required = false) @DateTimeFormat(pattern = EWM_PATTERN) LocalDateTime rangeEnd,
-            @RequestParam(required = false, defaultValue = "false") Boolean onlyAvailable,
+            @RequestParam(defaultValue = "false") Boolean onlyAvailable,
             @RequestParam(required = false) String sort,
-            @RequestParam(required = false, defaultValue = "0") int from,
-            @RequestParam(required = false, defaultValue = "10") int size
+            @RequestParam(defaultValue = "0") int from,
+            @RequestParam(defaultValue = "10") int size
     ) {
         statsTracker.countHit(request);
         List<Event> events = eventService.searchPublished(

@@ -1,6 +1,5 @@
 package ru.practicum.ewm.dto.handler;
 
-
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -27,21 +26,25 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ApiError> handleBadRequest(BadRequestException ex) {
+        log.warn("BadRequestException: {}", ex.getMessage());
         return build(HttpStatus.BAD_REQUEST, "Incorrectly made request.", ex.getMessage(), null);
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ApiError> handleNotFound(NotFoundException ex) {
+        log.warn("NotFoundException: {}", ex.getMessage());
         return build(HttpStatus.NOT_FOUND, "The required object was not found.", ex.getMessage(), null);
     }
 
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<ApiError> handleConflict(ConflictException ex) {
+        log.warn("ConflictException: {}", ex.getMessage());
         return build(HttpStatus.CONFLICT, "Integrity constraint has been violated.", ex.getMessage(), null);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+        log.warn("MethodArgumentNotValidException: {}", ex.getMessage());
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -53,6 +56,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ApiError> handleConstraintViolation(ConstraintViolationException ex) {
+        log.warn("ConstraintViolationException: {}", ex.getMessage());
         List<String> errors = ex.getConstraintViolations()
                 .stream()
                 .map(v -> v.getPropertyPath() + ": " + v.getMessage())
@@ -63,6 +67,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class})
     public ResponseEntity<ApiError> handleBadFormat(Exception ex) {
+        log.warn("Bad format exception: {}", ex.getMessage());
         return build(HttpStatus.BAD_REQUEST, "Incorrectly made request.", ex.getMessage(), null);
     }
 
@@ -79,11 +84,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ServletRequestBindingException.class)
     public ResponseEntity<ApiError> handleServletBinding(ServletRequestBindingException ex) {
+        log.warn("ServletRequestBindingException: {}", ex.getMessage());
         return build(HttpStatus.BAD_REQUEST, "Incorrectly made request.", String.valueOf(ex), null);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiError> handleDataIntegrity(DataIntegrityViolationException ex) {
+        log.warn("DataIntegrityViolationException: {}", ex.getMessage());
         return build(HttpStatus.CONFLICT,
                 "Integrity constraint has been violated.",
                 ex.getMostSpecificCause() != null ? ex.getMostSpecificCause().getMessage() : ex.getMessage(),
@@ -92,6 +99,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ApiError> handleResponseStatusException(ResponseStatusException ex) {
+        log.warn("ResponseStatusException: status={}, reason={}", ex.getStatusCode(), ex.getReason());
         HttpStatus status = HttpStatus.valueOf(ex.getStatusCode().value());
         String reason = status.is4xxClientError()
                 ? "Incorrectly made request."
